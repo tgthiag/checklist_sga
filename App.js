@@ -1,7 +1,8 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Checklist from './src/components/screens/flap';
-import MainPage from './src/components/screens/main';
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View } from "react-native";
+import Checklist from "./src/components/screens/flap";
+import MainPage from "./src/components/screens/main";
+import Report from "./src/components/screens/report";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -11,9 +12,9 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-<NavigationContainer>
+    <NavigationContainer>
       <Stack.Navigator initialRouteName={"main"}>
-      <Stack.Screen
+        <Stack.Screen
           name="main"
           component={MainPage}
           options={{ headerShown: false }}
@@ -23,7 +24,11 @@ export default function App() {
           component={Checklist}
           options={{ headerShown: false }}
         />
-
+        <Stack.Screen
+          name="report"
+          component={Report}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
       {/* <Toast position={"bottom"} bottomOffset={90} /> */}
       {/* SIDEBAR WILL BE ADDED IN THE FUTURE */}
@@ -38,8 +43,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

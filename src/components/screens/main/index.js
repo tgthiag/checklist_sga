@@ -90,6 +90,41 @@ export default function MainPage({ navigation }) {
               </TouchableOpacity>
             )}
           />
+          <TouchableOpacity
+            style={{
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 12,
+            }}
+            onPress={() => navigation.navigate("report")}
+          >
+            <LinearGradient
+              style={{
+                width: "60%",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 30,
+                padding: 5,
+              }}
+              colors={[
+                "#fbe1fa",
+                "rgba(0,0,0,0.5)",
+                "rgba(0,0,0,0.6)",
+                "rgba(0,0,0,0.8)",
+              ]}
+            >
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: "#ffffff",
+                  fontSize: 15,
+                }}
+              >
+                RELATÓRIOS
+              </Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </SafeAreaView>
       </ImageBackground>
     </SafeAreaView>
