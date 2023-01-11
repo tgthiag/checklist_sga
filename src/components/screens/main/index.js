@@ -10,33 +10,10 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  laminadora,
-  c47,
-  amh,
-  biko,
-  chiesa,
-  cEstreita,
-  cLarga,
-  fobesa,
-  folhas,
-  furi,
-  flap,
-} from "../../sources/lists";
+import { listSectors } from "../../sources/lists";
 
 const sgaBackground = require("../../../../assets/sga.jpg");
 const logo = require("../../../../assets/sga_logo.png");
-const listSectors = [
-  { name: "Flap Disk", lista: flap, key: "flap" },
-  { name: "Folhas", lista: folhas, key: "folhas" },
-  { name: "Cinta Larga", lista: cLarga, key: "cLarga" },
-  { name: "Cinta Estreita", lista: cEstreita, key: "cEstreita" },
-  { name: "Laminadora", lista: laminadora, key: "laminadora" },
-  { name: "Chiesa", lista: chiesa, key: "chiesa" },
-  { name: "Furi", lista: furi, key: "furi" },
-  { name: "Cortadeira 47", lista: c47, key: "c47" },
-  { name: "Biko", lista: biko, key: "biko" },
-];
 
 export default function MainPage({ navigation }) {
   return (
