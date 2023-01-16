@@ -23,18 +23,19 @@ class Report extends Component {
       reportDate: [],
       showView: null,
       setorPercent: [],
+      data: null
     };
   }
 
   componentDidUpdate() {}
 
   componentDidMount() {
-    let date = new Date()
-    let datenow = [date.getFullYear(),date.getMonth() +1]
+    let date = new Date();
+    let datenow = [date.getFullYear(), date.getMonth() + 1];
     this.setState({
-      reportDate: datenow
-    })
-    this.loadData(date.getFullYear(), date.getMonth() +1)
+      reportDate: datenow,
+    });
+    this.loadData(date.getFullYear(), date.getMonth() + 1);
   }
 
   backColor(percent, opacity) {
@@ -45,10 +46,9 @@ class Report extends Component {
     }
   }
 
-  loadData(year, month){
-    let database = getDatabase(db)
+  loadData(year, month) {
+    let database = getDatabase(db);
     const reference = ref(database, `records/`);
-    const prev = { flap: [] };
     onValue(
       reference,
       (snapshot) => {
@@ -64,7 +64,11 @@ class Report extends Component {
 
           for (let y = 1; y < listSectors[idxLista].lista.length + 1; y++) {
             //Entering folder, acessing dates
-            for (let i in Object.fromEntries(Object.entries(data[listSectors[idxLista].key]).filter(([key]) => key.includes(`${year}-${month}`)))) {
+            for (let i in Object.fromEntries(
+              Object.entries(data[listSectors[idxLista].key]).filter(([key]) =>
+                key.includes(`${year}-${month}`)
+              )
+            )) {
               // console.log("teste ", Object.fromEntries(Object.entries(data[listSectors[idxLista].key]).filter(([key]) => key.includes('2022-10'))))
               // Acessing the key/values on every date
               for (let x in data[listSectors[idxLista].key][i]) {
@@ -133,6 +137,63 @@ class Report extends Component {
     );
   }
 
+  handleChange(props) {
+    if (props === "<") {
+      if (this.state.reportDate[1] > 1) {
+        return this.setState(
+          {
+            reportDate: [
+              this.state.reportDate[0],
+              this.state.reportDate[1] - 1,
+            ],
+          },
+          () => {
+            this.loadData(this.state.reportDate[0], this.state.reportDate[1])
+          }
+        );
+      } else {
+        return this.setState(
+          {
+            reportDate: [
+              this.state.reportDate[0] - 1,
+              (this.state.reportDate[1] = 12),
+            ],
+          },
+          () => {
+            this.loadData(this.state.reportDate[0], this.state.reportDate[1])
+          }
+        );
+      }
+    }
+    if(props === '>'){
+      if (this.state.reportDate[1] < 12) {
+        return this.setState(
+          {
+            reportDate: [
+              this.state.reportDate[0],
+              this.state.reportDate[1] + 1,
+            ],
+          },
+          () => {
+            this.loadData(this.state.reportDate[0], this.state.reportDate[1])
+          }
+        );
+      } else{
+        return this.setState(
+          {
+            reportDate: [
+              this.state.reportDate[0] + 1,
+              (this.state.reportDate[1] = 1),
+            ],
+          },
+          () => {
+            this.loadData(this.state.reportDate[0], this.state.reportDate[1])
+          }
+        );
+      }
+    }
+  }
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -141,7 +202,31 @@ class Report extends Component {
           style={styles.containerBackground}
         >
           <Text style={styles.Title}>Relatórios</Text>
-          <Text style={{justifyContent:"center", alignSelf:"center", fontWeight: "bold", marginBottom: 3, fontSize:16}}>{this.state.reportDate[1] < 10 ? '0'+this.state.reportDate[1] : this.state.reportDate[1]}/{this.state.reportDate[0]}</Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+          >
+            <Text
+              onPress={() => this.handleChange("<")}
+              style={{ fontSize: 18 }}
+            >
+              ◀
+            </Text>
+            <Text
+              style={{
+                justifyContent: "center",
+                alignSelf: "center",
+                fontWeight: "bold",
+                marginBottom: 3,
+                fontSize: 18,
+              }}
+            >
+              {this.state.reportDate[1] < 10
+                ? "0" + this.state.reportDate[1]
+                : this.state.reportDate[1]}
+              /{this.state.reportDate[0]}
+            </Text>
+            <Text onPress={() => this.handleChange(">")} style={{ fontSize: 18 }}>▶</Text>
+          </View>
           <ScrollView>
             {Object.keys(this.state.generalData)
               .map((k) => this.state.generalData[k])
@@ -157,7 +242,7 @@ class Report extends Component {
                     <View
                       style={{
                         margin: 5,
-                        backgroundColor: "rgba(255, 255, 255, 0.6)" ,
+                        backgroundColor: "rgba(255, 255, 255, 0.6)",
                         padding: 5,
                         borderRadius: 10,
                       }}
@@ -182,25 +267,37 @@ class Report extends Component {
                           {listSectors[index].name}
                         </Text>
                         <View
-                        style={{
-                          alignItems:"center",justifyContent:"center",borderRadius: 15,padding: 5,
-                          backgroundColor:this.state.showView !== index ? this.backColor(this.state.setorPercent[listSectors[index].key],15) : null 
-                        }}
-                        >
-                        <Text
                           style={{
-                            alignSelf: "center",
-                            marginLeft: 10,
-                            fontWeight: "bold",
-                            fontSize: 16,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            borderRadius: 15,
+                            padding: 5,
+                            backgroundColor:
+                              this.state.showView !== index
+                                ? this.backColor(
+                                    this.state.setorPercent[
+                                      listSectors[index].key
+                                    ],
+                                    15
+                                  )
+                                : null,
                           }}
                         >
-                          {this.state.setorPercent[listSectors[index].key] !==
-                          "NaN"
-                            ? this.state.setorPercent[listSectors[index].key] +
-                              "%"
-                            : "-"}
-                        </Text>
+                          <Text
+                            style={{
+                              alignSelf: "center",
+                              marginLeft: 10,
+                              fontWeight: "bold",
+                              fontSize: 16,
+                            }}
+                          >
+                            {this.state.setorPercent[listSectors[index].key] !==
+                            "NaN"
+                              ? this.state.setorPercent[
+                                  listSectors[index].key
+                                ] + "%"
+                              : "-"}
+                          </Text>
                         </View>
                       </View>
                       {this.state.showView !== null &&
