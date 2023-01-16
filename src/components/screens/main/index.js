@@ -3,40 +3,86 @@ import {
   Text,
   ImageBackground,
   StyleSheet,
-  Button,
   TouchableOpacity,
   Image,
   FlatList,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { listSectors } from "../../sources/lists";
+import { listSectors } from "../../../../lists";
+import TurnoSelect from "../../functions/turnoSelect";
 
 const sgaBackground = require("../../../../assets/sga.jpg");
 const logo = require("../../../../assets/sga_logo.png");
 
 export default function MainPage({ navigation }) {
+  const RelatorioButton = () => {
+    return (
+      <TouchableOpacity
+        style={{
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 12,
+        }}
+        onPress={() => navigation.navigate("report")}
+      >
+        <LinearGradient
+          style={{
+            width: "60%",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 30,
+            padding: 5,
+          }}
+          colors={[
+            "rgba(255,255,255,0.5)",
+            "rgba(100,100,100,0.5)",
+            "rgba(100,100,100,0.5)",
+            "rgba(50,50,50,0.5)",
+          ]}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              color: "rgba(0, 0, 0, 0.9)",
+              textShadowColor: "rgba(255,255,255,0.9)",
+              textShadowOffset: { width: -2, height: 1 },
+              textShadowRadius: 5,
+              fontSize: 16,
+            }}
+          >
+            RELATÓRIOS
+          </Text>
+        </LinearGradient>
+      </TouchableOpacity>
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground source={sgaBackground} style={styles.ImageBackground}>
         <SafeAreaView style={styles.centerContainer}>
           <Image source={logo} style={styles.logo} />
+          <TurnoSelect />
           <FlatList
-            style={{ width: "100%", height: "10%" }}
+            style={{ width: "100%" }}
             data={listSectors}
+            ListFooterComponent={RelatorioButton}
             renderItem={({ item, index }) => (
               <TouchableOpacity
                 style={{
                   width: "100%",
                   alignItems: "center",
                   justifyContent: "center",
-                  marginBottom: 12,
+                  marginBottom: 10,
                 }}
                 onPress={() =>
-                  navigation.navigate("checklist", {
-                    setores: item.lista,
-                    fireDBName: item.key,
-                  })
+                  global.checkValue !== 0
+                    ? navigation.navigate("checklist", {
+                        setores: item.lista,
+                        fireDBName: item.key,
+                      })
+                    : alert("Selecione o turno")
                 }
               >
                 <LinearGradient
@@ -48,17 +94,20 @@ export default function MainPage({ navigation }) {
                     padding: 5,
                   }}
                   colors={[
-                    "#fbe1fa",
-                    "rgba(0,0,0,0.5)",
-                    "rgba(0,0,0,0.6)",
-                    "rgba(0,0,0,0.8)",
+                    "rgba(255,255,255,0.5)",
+                    "rgba(100,100,100,0.5)",
+                    "rgba(100,100,100,0.5)",
+                    "rgba(50,50,50,0.5)",
                   ]}
                 >
                   <Text
                     style={{
                       fontWeight: "bold",
-                      color: "#ffffff",
-                      fontSize: 15,
+                      color: "rgba(0, 0, 0, 0.9)",
+                      textShadowColor: "rgba(255,255,255,0.7)",
+                      textShadowOffset: { width: -2, height: 1 },
+                      textShadowRadius: 5,
+                      fontSize: 16,
                     }}
                   >
                     {item.name}
@@ -67,41 +116,6 @@ export default function MainPage({ navigation }) {
               </TouchableOpacity>
             )}
           />
-          <TouchableOpacity
-            style={{
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 12,
-            }}
-            onPress={() => navigation.navigate("report")}
-          >
-            <LinearGradient
-              style={{
-                width: "60%",
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 30,
-                padding: 5,
-              }}
-              colors={[
-                "#fbe1fa",
-                "rgba(0,0,0,0.5)",
-                "rgba(0,0,0,0.6)",
-                "rgba(0,0,0,0.8)",
-              ]}
-            >
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  color: "#ffffff",
-                  fontSize: 15,
-                }}
-              >
-                RELATÓRIOS
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
         </SafeAreaView>
       </ImageBackground>
     </SafeAreaView>
@@ -120,7 +134,7 @@ const styles = StyleSheet.create({
   },
   centerContainer: {
     width: "90%",
-    height: "90%",
+    height: "95%",
     backgroundColor: "rgba(60,60,60,0.3)",
     borderRadius: 50,
     justifyContent: "center",
@@ -131,7 +145,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     justifyContent: "center",
-    marginBottom: 30,
+    marginBottom: 15,
   },
   button: {
     margin: 20,

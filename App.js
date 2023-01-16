@@ -6,6 +6,7 @@ import MainPage from "./src/components/screens/main";
 import Report from "./src/components/screens/report";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { registerRootComponent } from "expo";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,16 +31,11 @@ export default function App() {
           />
         </Stack.Navigator>
         {/* <Toast position={"bottom"} bottomOffset={90} /> */}
-        {/* SIDEBAR WILL BE ADDED IN THE FUTURE */}
-        {/* <Drawer.Navigator>
-        <Drawer.Screen name="Home" component={MainPage}  />
-        <Drawer.Screen name="Conference" component={Checklist} />
-      </Drawer.Navigator> */}
-        {/* </AppContext.Provider> */}
+
       </NavigationContainer>
   );
 }
-
+registerRootComponent(()=>App())
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -10,12 +10,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MyRadioBt from "../../functions/radioBt";
-import { db } from "../../../config/rtdb/database";
+import { db } from "../../../../database";
 import { getCurrentDate } from "../../functions/getDate";
 
 const sgaBackground = require("../../../../assets/sga.jpg");
-// const setor = {  };
-const turno = 1;
 
 export default class Checklist extends Component {
   constructor(props) {
@@ -24,15 +22,17 @@ export default class Checklist extends Component {
       checked: 0,
       setor: { name: this.props.route.params.fireDBName },
       listas: this.props.route.params.setores,
+      contextTurno: global.checkValue,
     };
   }
 
   updateValueDb(result, placed) {
     console.log(result);
     console.log("index " + placed);
-    const key = `${turno}_${placed + 1}`;
+    const database = getDatabase(db)
+    const key = `${this.state.contextTurno}_${placed + 1}`;
     const value = result;
-    update(ref(db, `records/${this.state.setor.name}/${getCurrentDate()}/`), {
+    update(ref(database, `records/${this.state.setor.name}/${getCurrentDate()}/`), {
       [key]: value,
     });
   }
@@ -63,7 +63,7 @@ export default class Checklist extends Component {
                 >
                   <Text style={styles.pontosText}>{item}</Text>
                   <MyRadioBt
-                    dailyId={`${turno}_${index + 1}`}
+                    dailyId={`${this.state.contextTurno}_${index + 1}`}
                     setor={this.state.setor.name}
                     callback={(value) => {
                       this.updateValueDb(value, index);

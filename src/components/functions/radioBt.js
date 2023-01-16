@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { View, Text } from "react-native";
 import { RadioButton } from "react-native-paper";
-import { db } from "../../config/rtdb/database";
-import { ref, onValue } from "firebase/database";
+import { db } from "../../../database";
+import { ref, onValue, getDatabase } from "firebase/database";
 import { getCurrentDate } from "./getDate";
 
 class MyRadioBt extends Component {
@@ -20,7 +20,8 @@ class MyRadioBt extends Component {
     const { dailyId } = this.props;
     const { setor } = this.props;
     const atual = setor;
-    const reference = ref(db, `records/${atual}/${getCurrentDate()}/`);
+    const database = getDatabase(db)
+    const reference = ref(database, `records/${atual}/${getCurrentDate()}/`);
 
     onValue(
       reference,
