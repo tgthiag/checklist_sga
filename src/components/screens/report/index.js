@@ -23,19 +23,28 @@ class Report extends Component {
       reportDate: [],
       showView: null,
       setorPercent: [],
-      data: null
+      data: null,
     };
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() {
+    console.log("PERCENTTTT", this.state.setorPercent);
+  }
 
   componentDidMount() {
+    let database = getDatabase(db);
+    const reference = ref(database, `records/`);
     let date = new Date();
     let datenow = [date.getFullYear(), date.getMonth() + 1];
     this.setState({
       reportDate: datenow,
     });
-    this.loadData(date.getFullYear(), date.getMonth() + 1);
+    onValue(reference, (snapshot) => {
+      const firebaseData = snapshot.val();
+      this.setState({ data: firebaseData }, () => {
+        this.loadData(date.getFullYear(), date.getMonth() + 1, firebaseData);
+      });
+    });
   }
 
   backColor(percent, opacity) {
@@ -46,95 +55,87 @@ class Report extends Component {
     }
   }
 
-  loadData(year, month) {
-    let database = getDatabase(db);
-    const reference = ref(database, `records/`);
-    onValue(
-      reference,
-      (snapshot) => {
-        const data = snapshot.val();
-        let verifications = 0;
-        let isOk = 0;
-        let errors = 0;
-        let setorVerifications = 0;
-        let setorIsOk = 0;
-        for (let idxLista = 0; idxLista < listSectors.length; idxLista++) {
-          //verify Y times, Y = list length
-          let acumulator = [];
+  loadData(year, month, data) {
+    let verifications = 0;
+    let isOk = 0;
+    let errors = 0;
+    let setorVerifications = 0;
+    let setorIsOk = 0;
+    for (let idxLista = 0; idxLista < listSectors.length; idxLista++) {
+      //verify Y times, Y = list length
+      let acumulator = [];
 
-          for (let y = 1; y < listSectors[idxLista].lista.length + 1; y++) {
-            //Entering folder, acessing dates
-            for (let i in Object.fromEntries(
-              Object.entries(data[listSectors[idxLista].key]).filter(([key]) =>
-                key.includes(`${year}-${month}`)
-              )
-            )) {
-              // console.log("teste ", Object.fromEntries(Object.entries(data[listSectors[idxLista].key]).filter(([key]) => key.includes('2022-10'))))
-              // Acessing the key/values on every date
-              for (let x in data[listSectors[idxLista].key][i]) {
-                //key data.flap[i]      value data.flap[i][x]
-                for (let trn = 1; trn < 4; trn++) {
-                  if (
-                    (x === `${trn}_${y}`) &
-                    (data[listSectors[idxLista].key][i][x] === 1 ||
-                      data[listSectors[idxLista].key][i][x] === 0)
-                  ) {
-                    verifications += 1;
-                  }
-                  if (
-                    (x === `${trn}_${y}`) &
-                    (data[listSectors[idxLista].key][i][x] === 1)
-                  ) {
-                    isOk += 1;
-                  }
-                  if (
-                    (x === `${trn}_${y}`) &
-                    (data[listSectors[idxLista].key][i][x] === 0)
-                  ) {
-                    errors += 1;
-                  }
-                }
+      for (let y = 1; y < listSectors[idxLista].lista.length + 1; y++) {
+        //Entering folder, acessing dates
+        for (let i in Object.fromEntries(
+          Object.entries(data[listSectors[idxLista].key]).filter(([key]) =>
+            key.includes(`${year}-${month}`)
+          )
+        )) {
+          // console.log("teste ", Object.fromEntries(Object.entries(data[listSectors[idxLista].key]).filter(([key]) => key.includes('2022-10'))))
+          // Acessing the key/values on every date
+          for (let x in data[listSectors[idxLista].key][i]) {
+            //key data.flap[i]      value data.flap[i][x]
+            for (let trn = 1; trn < 4; trn++) {
+              if (
+                (x === `${trn}_${y}`) &
+                (data[listSectors[idxLista].key][i][x] === 1 ||
+                  data[listSectors[idxLista].key][i][x] === 0)
+              ) {
+                verifications += 1;
+              }
+              if (
+                (x === `${trn}_${y}`) &
+                (data[listSectors[idxLista].key][i][x] === 1)
+              ) {
+                isOk += 1;
+              }
+              if (
+                (x === `${trn}_${y}`) &
+                (data[listSectors[idxLista].key][i][x] === 0)
+              ) {
+                errors += 1;
               }
             }
-
-            acumulator.push({
-              ...acumulator[listSectors[idxLista].key],
-              text: listSectors[idxLista].lista[y - 1],
-              verif: verifications,
-              errors: errors,
-              percent: ((isOk / verifications) * 100).toFixed(2),
-            });
-            setorVerifications = setorVerifications + verifications;
-            setorIsOk = setorIsOk + isOk;
-
-            verifications = 0;
-            isOk = 0;
-            errors = 0;
           }
-
-          this.setState((previous) => ({
-            setorPercent: {
-              ...previous.setorPercent,
-              [listSectors[idxLista].key]: (
-                (setorIsOk / setorVerifications) *
-                100
-              ).toFixed(2),
-            },
-          }));
-          setorIsOk = 0;
-          setorVerifications = 0;
-          this.setState((previous) => ({
-            generalData: {
-              ...previous.generalData,
-              [listSectors[idxLista].key]: acumulator,
-            },
-          }));
         }
-      },
-      {
-        onlyOnce: true,
+
+        acumulator.push({
+          ...acumulator[listSectors[idxLista].key],
+          text: listSectors[idxLista].lista[y - 1],
+          verif: verifications,
+          errors: errors,
+          percent: ((isOk / verifications) * 100).toFixed(2),
+        });
+        // console.log(
+        //   "antes",setorVerifications, verifications
+        // );
+        setorVerifications = setorVerifications + verifications;
+        setorIsOk = setorIsOk + isOk;
+        // console.log("depois",
+        //   setorVerifications, verifications
+        // );
+        verifications = 0;
+        isOk = 0;
+        errors = 0;
       }
-    );
+      let percent = ((setorIsOk / setorVerifications) * 100).toFixed(2);
+      this.setState((previous) => ({
+        setorPercent: {
+          ...previous.setorPercent,
+          [listSectors[idxLista].key]: percent,
+        },
+      }));
+
+      this.setState((previous) => ({
+        generalData: {
+          ...previous.generalData,
+          [listSectors[idxLista].key]: acumulator,
+        },
+      }));
+      setorIsOk = 0;
+      setorVerifications = 0;
+    }
   }
 
   handleChange(props) {
@@ -148,7 +149,11 @@ class Report extends Component {
             ],
           },
           () => {
-            this.loadData(this.state.reportDate[0], this.state.reportDate[1])
+            this.loadData(
+              this.state.reportDate[0],
+              this.state.reportDate[1],
+              this.state.data
+            );
           }
         );
       } else {
@@ -160,12 +165,16 @@ class Report extends Component {
             ],
           },
           () => {
-            this.loadData(this.state.reportDate[0], this.state.reportDate[1])
+            this.loadData(
+              this.state.reportDate[0],
+              this.state.reportDate[1],
+              this.state.data
+            );
           }
         );
       }
     }
-    if(props === '>'){
+    if (props === ">") {
       if (this.state.reportDate[1] < 12) {
         return this.setState(
           {
@@ -175,10 +184,14 @@ class Report extends Component {
             ],
           },
           () => {
-            this.loadData(this.state.reportDate[0], this.state.reportDate[1])
+            this.loadData(
+              this.state.reportDate[0],
+              this.state.reportDate[1],
+              this.state.data
+            );
           }
         );
-      } else{
+      } else {
         return this.setState(
           {
             reportDate: [
@@ -187,7 +200,11 @@ class Report extends Component {
             ],
           },
           () => {
-            this.loadData(this.state.reportDate[0], this.state.reportDate[1])
+            this.loadData(
+              this.state.reportDate[0],
+              this.state.reportDate[1],
+              this.state.data
+            );
           }
         );
       }
@@ -225,7 +242,12 @@ class Report extends Component {
                 : this.state.reportDate[1]}
               /{this.state.reportDate[0]}
             </Text>
-            <Text onPress={() => this.handleChange(">")} style={{ fontSize: 18 }}>▶</Text>
+            <Text
+              onPress={() => this.handleChange(">")}
+              style={{ fontSize: 18 }}
+            >
+              ▶
+            </Text>
           </View>
           <ScrollView>
             {Object.keys(this.state.generalData)
@@ -331,6 +353,7 @@ class Report extends Component {
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -349,4 +372,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
+
 export default Report;
