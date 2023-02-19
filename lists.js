@@ -123,5 +123,5 @@ export const listSectors = [
     { name: "Cortadeira 47", lista: c47, key: "c47" },
     { name: "Biko", lista: biko, key: "biko" },
     { name: "AMH", lista: amh, key: "amh" },
-    { name: "Fobesa", lista: biko, key: "fobesa" },
+    { name: "Fobesa", lista: fobesa, key: "fobesa" },
   ];

@@ -29,22 +29,30 @@ class Report extends Component {
 
   componentDidUpdate() {
     console.log("PERCENTTTT", this.state.setorPercent);
+    console.log("DATAAAA", this.state.data);
   }
 
   componentDidMount() {
+    console.log("teste 1 ")
     let database = getDatabase(db);
     const reference = ref(database, `records/`);
     let date = new Date();
     let datenow = [date.getFullYear(), date.getMonth() + 1];
+    console.log("teste 2 ")
     this.setState({
       reportDate: datenow,
     });
+    console.log("teste 3 ")
     onValue(reference, (snapshot) => {
       const firebaseData = snapshot.val();
+      console.log("teste 4 ")
+      console.log("firebasedata",firebaseData)
       this.setState({ data: firebaseData }, () => {
         this.loadData(date.getFullYear(), date.getMonth() + 1, firebaseData);
       });
-    });
+    },{onlyOnce: true}
+    );
+    console.log("teste 5 ")
   }
 
   backColor(percent, opacity) {
@@ -56,6 +64,7 @@ class Report extends Component {
   }
 
   loadData(year, month, data) {
+    console.log(data)
     let verifications = 0;
     let isOk = 0;
     let errors = 0;
