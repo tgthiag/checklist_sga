@@ -125,3 +125,4 @@ export const listSectors = [
     { name: "AMH", lista: amh, key: "amh" },
     { name: "Fobesa", lista: fobesa, key: "fobesa" },
   ];
+  
