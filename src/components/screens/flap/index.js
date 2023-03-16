@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getDatabase, ref, onValue, set, update } from "firebase/database";
+import { getDatabase, ref, update } from "firebase/database";
 import {
   ImageBackground,
   StyleSheet,
@@ -27,14 +27,15 @@ export default class Checklist extends Component {
   }
 
   updateValueDb(result, placed) {
-    console.log(result);
-    console.log("index " + placed);
-    const database = getDatabase(db)
+    const database = getDatabase(db);
     const key = `${this.state.contextTurno}_${placed + 1}`;
     const value = result;
-    update(ref(database, `records/${this.state.setor.name}/${getCurrentDate()}/`), {
-      [key]: value,
-    });
+    update(
+      ref(database, `records/${this.state.setor.name}/${getCurrentDate()}/`),
+      {
+        [key]: value,
+      }
+    );
   }
 
   render() {
@@ -44,9 +45,7 @@ export default class Checklist extends Component {
           <FlatList
             data={this.state.listas}
             renderItem={({ item, index }) => (
-              <TouchableWithoutFeedback
-              // onPress={() => this.actionOnRow(item, index)}
-              >
+              <TouchableWithoutFeedback>
                 <View
                   style={[
                     styles.container,
@@ -69,7 +68,6 @@ export default class Checklist extends Component {
                       this.updateValueDb(value, index);
                     }}
                   />
-                  {/*this.getResponse.bind(index, this)}/> */}
                 </View>
               </TouchableWithoutFeedback>
             )}

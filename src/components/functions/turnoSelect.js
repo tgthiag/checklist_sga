@@ -3,20 +3,24 @@ import { StyleSheet, Text, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
 export default function TurnoSelect() {
-    const [checkValue, setCheckValue] = useState(0)
+  const [checkValue, setCheckValue] = useState(0);
 
-    global.checkValue = checkValue
+  global.checkValue = checkValue;
 
-    return (
-    <View numColumns={6} flexDirection={"row"} columnWrapperStyle={{ flex: 2 }} style={{justifyContent:"space-between", margin: 5}}>
+  return (
+    <View
+      numColumns={6}
+      flexDirection={"row"}
+      columnWrapperStyle={{ flex: 2 }}
+      style={{ justifyContent: "space-between", margin: 5 }}
+    >
       <Text style={styles.textTurno}>1ºT</Text>
       <RadioButton
         value="1"
         status={checkValue === 1 ? "checked" : "unchecked"}
         tit
         onPress={() => {
-          // this.holder(1);
-          setCheckValue(1)
+          setCheckValue(1);
         }}
         color="#a8a8a8"
       />
@@ -25,8 +29,7 @@ export default function TurnoSelect() {
         value="0"
         status={checkValue === 2 ? "checked" : "unchecked"}
         onPress={() => {
-          // this.holder(0);
-          setCheckValue(2)
+          setCheckValue(2);
         }}
         color="#a8a8a8"
       />
@@ -35,8 +38,7 @@ export default function TurnoSelect() {
         value="3"
         status={checkValue === 3 ? "checked" : "unchecked"}
         onPress={() => {
-          // this.holder(3);
-          setCheckValue(3)
+          setCheckValue(3);
         }}
         color="#a8a8a8"
       />

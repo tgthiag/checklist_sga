@@ -20,7 +20,7 @@ class MyRadioBt extends Component {
     const { dailyId } = this.props;
     const { setor } = this.props;
     const atual = setor;
-    const database = getDatabase(db)
+    const database = getDatabase(db);
     const reference = ref(database, `records/${atual}/${getCurrentDate()}/`);
 
     onValue(
@@ -30,7 +30,6 @@ class MyRadioBt extends Component {
         (data != null) & (dailyId != null)
           ? this.setState({ checked: data[dailyId] })
           : this.setState({ checked: 3 });
-        // r
       },
       {
         onlyOnce: true,

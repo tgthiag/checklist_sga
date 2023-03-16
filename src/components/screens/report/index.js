@@ -27,32 +27,24 @@ class Report extends Component {
     };
   }
 
-  componentDidUpdate() {
-    console.log("PERCENTTTT", this.state.setorPercent);
-    console.log("DATAAAA", this.state.data);
-  }
-
   componentDidMount() {
-    console.log("teste 1 ")
     let database = getDatabase(db);
     const reference = ref(database, `records/`);
     let date = new Date();
     let datenow = [date.getFullYear(), date.getMonth() + 1];
-    console.log("teste 2 ")
     this.setState({
       reportDate: datenow,
     });
-    console.log("teste 3 ")
-    onValue(reference, (snapshot) => {
-      const firebaseData = snapshot.val();
-      console.log("teste 4 ")
-      console.log("firebasedata",firebaseData)
-      this.setState({ data: firebaseData }, () => {
-        this.loadData(date.getFullYear(), date.getMonth() + 1, firebaseData);
-      });
-    },{onlyOnce: true}
+    onValue(
+      reference,
+      (snapshot) => {
+        const firebaseData = snapshot.val();
+        this.setState({ data: firebaseData }, () => {
+          this.loadData(date.getFullYear(), date.getMonth() + 1, firebaseData);
+        });
+      },
+      { onlyOnce: true }
     );
-    console.log("teste 5 ")
   }
 
   backColor(percent, opacity) {
@@ -64,7 +56,6 @@ class Report extends Component {
   }
 
   loadData(year, month, data) {
-    console.log(data)
     let verifications = 0;
     let isOk = 0;
     let errors = 0;
@@ -81,10 +72,8 @@ class Report extends Component {
             key.includes(`${year}-${month}`)
           )
         )) {
-          // console.log("teste ", Object.fromEntries(Object.entries(data[listSectors[idxLista].key]).filter(([key]) => key.includes('2022-10'))))
           // Acessing the key/values on every date
           for (let x in data[listSectors[idxLista].key][i]) {
-            //key data.flap[i]      value data.flap[i][x]
             for (let trn = 1; trn < 4; trn++) {
               if (
                 (x === `${trn}_${y}`) &
@@ -116,14 +105,8 @@ class Report extends Component {
           errors: errors,
           percent: ((isOk / verifications) * 100).toFixed(2),
         });
-        // console.log(
-        //   "antes",setorVerifications, verifications
-        // );
         setorVerifications = setorVerifications + verifications;
         setorIsOk = setorIsOk + isOk;
-        // console.log("depois",
-        //   setorVerifications, verifications
-        // );
         verifications = 0;
         isOk = 0;
         errors = 0;
